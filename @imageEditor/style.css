@@ -1,5 +1,7 @@
 body {
   overflow: hidden;
+  font-family: "Inter", sans-serif;
+  letter-spacing: 1px;
 }
 
 #drop-area:has(img) {
@@ -14,6 +16,77 @@ body {
   background-color: #E5E5E5;
   width: 100%;
   height: 100%;
+}
+
+#navbar {
+  border-bottom: 1px solid #444444;
+}
+
+#navbar svg {
+  width: 30px;
+  height: 24px;
+}
+
+#layers svg, #controller svg {
+  width: 15px;
+  height: auto;
+}
+
+#layers .layer {
+  display: flex;
+  cursor: pointer;
+  padding: 4px 10px;
+  transition: 0.2s ease-in-out;
+  border: 1px solid #212529;
+  justify-content: center;
+  align-items: center;
+}
+#layers .layer:hover {
+  border: 1px solid var(--bs-primary);
+}
+#layers .layer > span {
+  margin-left: 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70%;
+}
+#layers .layer .tools span:first-child {
+  margin-right: 4px;
+}
+#layers .layer .tools span.unlocked svg.lock-close {
+  display: none;
+}
+#layers .layer .tools span.locked svg.lock-open {
+  display: none;
+}
+#layers .layer .tools span.visibility svg.eye-close {
+  display: none;
+}
+#layers .layer .tools span.hidden svg.eye-open {
+  display: none;
+}
+#layers .layer.active {
+  background-color: #4a5878;
+  border-color: transparent;
+}
+
+@media (prefers-color-scheme: dark) {
+  #layers, #controller, #navbar {
+    color: #ffffff;
+    background-color: #212529;
+  }
+
+  img {
+    fill: white;
+  }
+}
+@media (prefers-color-scheme: light) {
+  #layers, #controller, #navbar {
+    color: #212529;
+    background-color: #ffffff;
+  }
 }
 
 /*# sourceMappingURL=style.css.map */

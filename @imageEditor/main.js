@@ -4,6 +4,7 @@ let $editor;
 $editor = new ImageEditor({
     navbar: document.getElementById('navbar'),
     dropArea: document.getElementById('drop-area'),
-    layer: document.getElementById('layers'),
-    controller: document.getElementById('controller'),
+    container: document.getElementById('canvas-container'),
+    layersHolder: document.getElementById('layers'),
+    layerController: document.getElementById('controller'),
 });
