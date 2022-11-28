@@ -14,6 +14,7 @@ export default class Frame {
     props = Frame.props;
     width;
     height;
+    id;
     x;
     y;
     name;
@@ -23,6 +24,7 @@ export default class Frame {
 
     constructor(params = {
         type: 'default',
+        id: Layers.uniqueId('Frame-'),
         lock: false,
         visibility: true,
         x: 0,
@@ -34,6 +36,7 @@ export default class Frame {
     }) {
         this.type = params.type;
         this.x = params.x;
+        this.id = params.id;
         this.y = params.y;
         this.backgroundColor = params.backgroundColor;
         this.width = params.width;
@@ -56,12 +59,12 @@ export default class Frame {
     }
 
     async render() {
-        this.ctx.fillStyle = 'black';
-        this.ctx.font = (22 / window.ImageEditor.cameraZoom) + 'px "Inter", sans-serif';
-        this.ctx.letterSpacing = "1px";
-        this.ctx.fillText(this.name, this.x, this.y - 10);
         this.ctx.fillStyle = this.backgroundColor;
         this.ctx.fillRect(this.x, this.y, this.width, this.height);
+
+        this.ctx.fillStyle = 'black';
+        this.ctx.font = (22 / window.ImageEditor.cameraZoom) + 'px Arial';
+        this.ctx.fillText(this.name, this.x, this.y - 10);
         return this;
     }
 }

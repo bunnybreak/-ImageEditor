@@ -18,6 +18,7 @@ export default class Base {
 
     async load() {
         await this.createCanvas();
+        await this.globalEvents();
     }
 
     async createCanvas() {
@@ -33,5 +34,16 @@ export default class Base {
         };
         this.container.append(this.canvas);
         return this;
+    }
+
+    async globalEvents() {
+        this.canvas.classList.add('deactivate-active-layer');
+        this.canvas.addEventListener('click', (e) => {
+            //deactivate active Layer
+            let activeLayer = this.props.layersHolder.querySelectorAll('.active.layer');
+            if (activeLayer.length > 0)
+                activeLayer.forEach((node) => node.classList.remove('active'));
+            //end deactivate active Layer
+        });
     }
 }

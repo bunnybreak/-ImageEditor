@@ -23,9 +23,13 @@ export default class Layers {
     }
 
     static add(object) {
-        this.#layers.push(object);
+        let index = this.#layers.push(object) - 1;
         window.ImageEditor.Layers = this.#layers;
-        LayerBar.addLayerBarElement(object);
+        LayerBar.addLayerBarElement(index, object);
+    }
+
+    static get(index) {
+        return this.#layers[index];
     }
 
     static count(object) {
@@ -51,7 +55,16 @@ export default class Layers {
             return false;
     }
 
-    static select(object) {
-        this.#current = object;
+    static select(index) {
+        this.#current = index;
+    }
+
+    static uniqueId(prefix = '') {
+        let r = prefix + (Math.random() + 1).toString(36).substring(2);
+        if (this.#layers.findIndex((e) => r === e.id) === -1) {
+            return r;
+        } else {
+            return Layers.uniqueId(prefix);
+        }
     }
 }

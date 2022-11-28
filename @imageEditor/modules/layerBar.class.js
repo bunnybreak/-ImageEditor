@@ -9,10 +9,11 @@ export default class LayerBar {
         LayerBar.layersHolder = props.layersHolder;
     }
 
-    static addLayerBarElement(layer) {
+    static addLayerBarElement(index, layer) {
         console.log('Layer Added', layer);
         let div = document.createElement('div');
         div.classList.add('layer');
+        div.dataset.index = index;
 
         /*let icon = document.createElement('img');
         icon.classList.add('icon');
@@ -24,6 +25,25 @@ export default class LayerBar {
 
         let span = document.createElement('span');
         span.innerText = layer.name;
+        span.addEventListener('dblclick', (e) => {
+            if (!span.classList.contains('editing')) {
+                span.classList.add('editing');
+                let text = e.target.innerText;
+                let input = document.createElement('input');
+                input.type = 'text';
+                input.value = text;
+                input.onkeydown = (e1) => {
+                    if (e1.enterKey) {
+                        span.classList.remove('editing');
+                        layer.name = e1.target.value
+                        e.target.innerText = e1.target.value
+                        input.remove();
+                    }
+                };
+                span.innerHTML = '';
+                span.append(input);
+            }
+        });
         div.append(span)
 
         /*let icon1 = document.createElement('img');
@@ -62,7 +82,7 @@ export default class LayerBar {
             let activeLayer = this.layersHolder.querySelectorAll('.active.layer');
             activeLayer.forEach((node) => node.classList.remove('active'));
             div.classList.add('active');
-            Layers.select(layer);
+            Layers.select(index);
         });
         this.layersHolder.append(div)
     }
