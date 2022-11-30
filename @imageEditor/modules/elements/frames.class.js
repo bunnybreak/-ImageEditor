@@ -62,8 +62,11 @@ export default class Frame {
         this.ctx.fillStyle = this.backgroundColor;
         this.ctx.fillRect(this.x, this.y, this.width, this.height);
 
+
+        const transform = this.ctx.getTransform();
+        const inverseZoom = transform.a;
         this.ctx.fillStyle = 'black';
-        this.ctx.font = (22 / window.ImageEditor.cameraZoom) + 'px Arial';
+        this.ctx.font = (22 / inverseZoom) + 'px Arial';
         this.ctx.fillText(this.name, this.x, this.y - 10);
         return this;
     }

@@ -10,6 +10,9 @@ export default class LayerBar {
     }
 
     static addLayerBarElement(index, layer) {
+        if (typeof layer === 'function') {
+            return;
+        }
         console.log('Layer Added', layer);
         let div = document.createElement('div');
         div.classList.add('layer');

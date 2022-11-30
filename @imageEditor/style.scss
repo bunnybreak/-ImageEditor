@@ -59,7 +59,7 @@ body {
     cursor: pointer;
     padding: 4px 10px;
     transition: 0.2s ease-in-out;
-    border: 1px solid #212529;
+    border: 1px solid transparent;
     justify-content: center;
     align-items: center;
 
@@ -79,7 +79,6 @@ body {
         input {
           background-color: $dark;
           color: $light;
-
         }
       }
     }
@@ -126,13 +125,14 @@ body {
     color: $light;
     background-color: $dark;
   }
-  img {
-    fill: white;
-  }
 }
 
 @media (prefers-color-scheme: light) {
-  #layers, #controller, #navbar {
+  #navbar {
+    color: $light;
+    background-color: $light;
+  }
+  #layers, #controller {
     color: $dark;
     background-color: $light;
   }

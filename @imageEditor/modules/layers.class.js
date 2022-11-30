@@ -12,6 +12,8 @@ export default class Layers {
         for (let layer of this.#layers) {
             if (typeof layer.render === 'function') {
                 await layer.render();
+            } else if (typeof layer === 'function') {
+                await layer(window.ImageEditor.ctx);
             } else {
                 console.error('No able to render this Layer : ', layer);
             }
@@ -26,6 +28,10 @@ export default class Layers {
         let index = this.#layers.push(object) - 1;
         window.ImageEditor.Layers = this.#layers;
         LayerBar.addLayerBarElement(index, object);
+    }
+
+    static update(key, object) {
+        this.#layers[key] = object;
     }
 
     static get(index) {
