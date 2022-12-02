@@ -1,6 +1,7 @@
 import Layers from "../layers.class.js";
+import ElementBase from "./ElementBase.class.js";
 
-export default class Frame {
+export default class Frame extends ElementBase {
     static props = {
         name: 'Frame',
         icon: '<svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">\n' +
@@ -12,38 +13,17 @@ export default class Frame {
             '</svg>'
     };
     props = Frame.props;
-    width;
-    height;
     id;
-    x;
-    y;
-    name;
-    lock;
-    visibility;
-    ctx;
 
     constructor(params = {
-        type: 'default',
         id: Layers.uniqueId('Frame-'),
-        lock: false,
-        visibility: true,
-        x: 0,
-        y: 0,
         backgroundColor: '#FFF',
         width: 1920,
         height: 1080,
         name: 'Frame',
     }) {
-        this.type = params.type;
-        this.x = params.x;
-        this.id = params.id;
-        this.y = params.y;
-        this.backgroundColor = params.backgroundColor;
-        this.width = params.width;
-        this.height = params.height;
-        this.name = params.name;
-        this.lock = params.lock;
-        this.visibility = params.visibility;
+        super(params);
+        console.log("Frames class Loaded");
         if (this.type === 'default') {
             let count = Layers.count(Frame);
             if (this.name === 'Frame')
@@ -54,20 +34,21 @@ export default class Frame {
                 this.y = lastFrame.y;
             }
         }
-        //get Global CTX
-        this.ctx = window.ImageEditor.ctx;
+
+        this.add((ctx) => {
+            const transform = ctx.getTransform();
+            const inverseZoom = transform.a;
+            ctx.fillStyle = 'black';
+            ctx.font = (22 / inverseZoom) + 'px Arial';
+            ctx.fillText(this.name, this.x, this.y - 10);
+        })
     }
 
     async render() {
         this.ctx.fillStyle = this.backgroundColor;
         this.ctx.fillRect(this.x, this.y, this.width, this.height);
 
-
-        const transform = this.ctx.getTransform();
-        const inverseZoom = transform.a;
-        this.ctx.fillStyle = 'black';
-        this.ctx.font = (22 / inverseZoom) + 'px Arial';
-        this.ctx.fillText(this.name, this.x, this.y - 10);
+        await super.render();
         return this;
     }
 }

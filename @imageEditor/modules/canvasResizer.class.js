@@ -2,9 +2,9 @@ import Base from "./base.class.js";
 import Layers from "./layers.class.js";
 
 export default class CanvasResizer extends Base {
-    currentTransformedCursor = {x: 600, y: 600}
-    cameraOffset = {x: 0, y: 0}
-    cameraZoom = 0.8
+    currentTransformedCursor = {x: 250, y: 250}
+    cameraOffset = {x: this.canvasWidth/2, y: this.canvasWidth/2}
+    cameraZoom = 0.5
     MAX_ZOOM = 5
     MIN_ZOOM = 0.1
     SCROLL_SENSITIVITY = 0.0010
@@ -53,7 +53,6 @@ export default class CanvasResizer extends Base {
                 x: coordinates.x / this.cameraZoom - this.cameraOffset.x,
                 y: coordinates.y / this.cameraZoom - this.cameraOffset.y
             };
-            console.log(this.dragStart);
         }
     }
 

@@ -1,5 +1,5 @@
-import Frame from "./elements/frames.class.js";
 import Layers from "./layers.class.js";
+import ElementBase from "./elements/ElementBase.class.js";
 
 export default class Base {
     props = {};
@@ -26,7 +26,7 @@ export default class Base {
     async createCanvas() {
         this.canvas = document.createElement('canvas');
         this.canvas.setAttribute("id", "canvas");
-        this.canvas.setAttribute("style", "width:" + this.container.clientWidth + 'px;height:' + this.container.clientHeight + 'px');
+        //this.canvas.setAttribute("style", "width:" + this.container.clientWidth + 'px;height:' + this.container.clientHeight + 'px');
         this.canvas.width = this.canvasWidth = window.screen.width;
         this.canvas.height = this.canvasHeight = window.screen.height;
         this.ctx = this.canvas.getContext('2d');
@@ -53,9 +53,9 @@ export default class Base {
         });
         this.canvas.addEventListener('mousedown', (e) => {
             e.preventDefault();
-            const pos = this.getMouseCoordinates(e);
-            this.isMouseInElement(pos.x, pos.y).then((index) => {
-                console.log(index);
+            const {x, y} = this.getMouseCoordinates(e);
+            this.isMouseInElement(x, y).then((ref) => {
+                Layers.select(ref);
             });
         });
     }
@@ -80,33 +80,29 @@ export default class Base {
         return {x: transformedX, y: transformedY};
     }
 
-    async isMouseInElement(x, y) {
+    async isMouseInElement(cx, cy) {
         return new Promise(((resolve, reject) => {
             Layers.getLayers().forEach((layer, index) => {
-                let coordsX = layer.x;
-                let coordsY = layer.y;
-                let element_left = coordsX;
-                let element_right = coordsX + layer.width;
-                let element_top = coordsY;
-                let element_bottom = coordsY + layer.height;
-
-                /*console.log(layer);
-                console.log(x, y);
-                console.log(element_left, element_right, element_top, element_bottom);
-                console.log(x > element_left, x < element_right, y > element_top, y < element_bottom);*/
-
-                if (x > element_left && x < element_right && y > element_top && y < element_bottom) {
-                    console.log('FOUND');
-                    Layers.update(1, (ctx) => {
-                        ctx.beginPath();
-                        ctx.strokeStyle = "red";
-                        ctx.rect(element_left, element_top, layer.width, layer.height);
-                        ctx.stroke();
-                    });
-                    resolve(index);
+                if (layer instanceof ElementBase) {
+                    const intersection = layer.isIntersect(cx, cy);
+                    if (intersection.isIntersect) {
+                        if (!layer.isLock) {
+                            Layers.add((ctx) => {
+                                ctx.beginPath();
+                                ctx.strokeStyle = "red";
+                                ctx.rect(intersection.left, intersection.top, intersection.right, intersection.bottom);
+                                ctx.stroke();
+                            });
+                            resolve(layer);
+                        } else {
+                            reject("Layer is lock.");
+                        }
+                    }
+                } else {
+                    reject("Not an element of element base.");
                 }
             });
-            resolve(false);
+            reject("Nothing found in this area.");
         }))
     }
 }

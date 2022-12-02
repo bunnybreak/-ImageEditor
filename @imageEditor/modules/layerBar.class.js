@@ -1,4 +1,5 @@
 import Layers from "./layers.class.js";
+import ElementBase from "./elements/ElementBase.class.js";
 
 export default class LayerBar {
     static layersHolder;
@@ -10,7 +11,7 @@ export default class LayerBar {
     }
 
     static addLayerBarElement(index, layer) {
-        if (typeof layer === 'function') {
+        if (!(layer instanceof ElementBase)) {
             return;
         }
         console.log('Layer Added', layer);
@@ -35,16 +36,20 @@ export default class LayerBar {
                 let input = document.createElement('input');
                 input.type = 'text';
                 input.value = text;
+                input.onblur = (e1) => {
+                    e1.stopPropagation();
+                    span.classList.remove('editing');
+                    layer.name = input.value;
+                    span.innerText = layer.name;
+                };
                 input.onkeydown = (e1) => {
                     if (e1.enterKey) {
-                        span.classList.remove('editing');
-                        layer.name = e1.target.value
-                        e.target.innerText = e1.target.value
-                        input.remove();
+                        input.blur()
                     }
                 };
                 span.innerHTML = '';
                 span.append(input);
+                input.focus();
             }
         });
         div.append(span)

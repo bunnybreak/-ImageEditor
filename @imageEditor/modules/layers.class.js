@@ -1,4 +1,5 @@
 import LayerBar from "./layerBar.class.js";
+import ElementBase from "./elements/ElementBase.class.js";
 
 export default class Layers {
     static #current = null;
@@ -10,7 +11,7 @@ export default class Layers {
 
     static async render() {
         for (let layer of this.#layers) {
-            if (typeof layer.render === 'function') {
+            if (layer instanceof ElementBase) {
                 await layer.render();
             } else if (typeof layer === 'function') {
                 await layer(window.ImageEditor.ctx);
@@ -28,6 +29,7 @@ export default class Layers {
         let index = this.#layers.push(object) - 1;
         window.ImageEditor.Layers = this.#layers;
         LayerBar.addLayerBarElement(index, object);
+        return this.#layers[index];
     }
 
     static update(key, object) {
