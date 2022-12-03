@@ -1,5 +1,6 @@
 import Layers from "../layers.class.js";
 import ElementBase from "./ElementBase.class.js";
+import Execute from "./execute.class.js";
 
 export default class Frame extends ElementBase {
     static props = {
@@ -13,7 +14,6 @@ export default class Frame extends ElementBase {
             '</svg>'
     };
     props = Frame.props;
-    id;
 
     constructor(params = {
         id: Layers.uniqueId('Frame-'),
@@ -21,13 +21,15 @@ export default class Frame extends ElementBase {
         width: 1920,
         height: 1080,
         name: 'Frame',
+        label: 'Frame',
     }) {
         super(params);
         console.log("Frames class Loaded");
         if (this.type === 'default') {
             let count = Layers.count(Frame);
-            if (this.name === 'Frame')
-                this.name += ' ' + (count + 1)
+            if (this.label === 'Frame') {
+                this.label += ' ' + (count + 1)
+            }
             if (count > 0) {
                 let lastFrame = Layers.last(Frame);
                 this.x = lastFrame.x + 50 + lastFrame.width;
@@ -35,16 +37,22 @@ export default class Frame extends ElementBase {
             }
         }
 
-        this.add((ctx) => {
-            const transform = ctx.getTransform();
-            const inverseZoom = transform.a;
-            ctx.fillStyle = 'black';
-            ctx.font = (22 / inverseZoom) + 'px Arial';
-            ctx.fillText(this.name, this.x, this.y - 10);
-        })
+        Layers.updateOrCreate(new Execute({
+            id: this.id + "-label",
+            fun: (ctx) => {
+                const transform = ctx.getTransform();
+                const inverseZoom = transform.a;
+                ctx.fillStyle = 'black';
+                ctx.font = (22 / inverseZoom) + 'px Arial';
+                ctx.fillText(this.label, this.x, this.y - 10);
+            }
+        }));
     }
 
     async render() {
+        if (!this.visibility)
+            return;
+
         this.ctx.fillStyle = this.backgroundColor;
         this.ctx.fillRect(this.x, this.y, this.width, this.height);
 

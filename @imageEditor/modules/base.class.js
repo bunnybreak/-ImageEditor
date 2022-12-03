@@ -82,26 +82,7 @@ export default class Base {
 
     async isMouseInElement(cx, cy) {
         return new Promise(((resolve, reject) => {
-            Layers.getLayers().forEach((layer, index) => {
-                if (layer instanceof ElementBase) {
-                    const intersection = layer.isIntersect(cx, cy);
-                    if (intersection.isIntersect) {
-                        if (!layer.isLock) {
-                            Layers.add((ctx) => {
-                                ctx.beginPath();
-                                ctx.strokeStyle = "red";
-                                ctx.rect(intersection.left, intersection.top, intersection.right, intersection.bottom);
-                                ctx.stroke();
-                            });
-                            resolve(layer);
-                        } else {
-                            reject("Layer is lock.");
-                        }
-                    }
-                } else {
-                    reject("Not an element of element base.");
-                }
-            });
+            Layers.checkElementIntersect(cx, cy, resolve, reject);
             reject("Nothing found in this area.");
         }))
     }
