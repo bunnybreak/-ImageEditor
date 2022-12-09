@@ -4,7 +4,7 @@ export default class Group {
     #layers = [];
 
     constructor() {
-        console.log('Stack Loaded');
+        //console.log('Stack Loaded');
     }
 
     async render() {
@@ -34,6 +34,14 @@ export default class Group {
         return this.#layers[index];
     }
 
+    getById(id) {
+        let index = this.#layers.findIndex((e) => id === e.id);
+        if (index !== -1) {
+            return this.#layers[index];
+        }
+        return false;
+    }
+
     count(object) {
         let count = 0;
         for (let stack of this.#layers) {
@@ -55,6 +63,24 @@ export default class Group {
             return this.#layers[index];
         else
             return false;
+    }
+
+    updateOrCreate(param) {
+        let index = this.#layers.findIndex((e) => param.id === e.id);
+        if (index === -1) {
+            return this.#layers.push(param) - 1;
+        } else {
+            this.#layers[index] = param;
+            return index;
+        }
+    }
+
+    delete(id) {
+        let index = this.#layers.findIndex((e) => id === e.id);
+        if (index !== -1) {
+            return this.#layers.splice(index, 1);
+        }
+        return false;
     }
 
     uniqueId(prefix = '') {

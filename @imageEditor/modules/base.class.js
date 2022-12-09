@@ -12,7 +12,7 @@ export default class Base {
     startY = 0;
 
     constructor(props) {
-        console.log("Base loaded");
+        //console.log("Base loaded");
         this.props = props;
         this.container = props.container;
         this.container.style.height = (window.innerHeight - this.props.navbar.clientHeight) + 'px';
@@ -49,13 +49,24 @@ export default class Base {
         });
         this.canvas.addEventListener('mousemove', (e) => {
             e.preventDefault();
-
+            const {x, y} = this.getMouseCoordinates(e);
+            this.isMouseInElement(x, y).then((ref) => {
+                ref.onmousemove();
+            });
         });
         this.canvas.addEventListener('mousedown', (e) => {
             e.preventDefault();
             const {x, y} = this.getMouseCoordinates(e);
             this.isMouseInElement(x, y).then((ref) => {
+                ref.onmousedown();
                 Layers.select(ref);
+            });
+        });
+        this.canvas.addEventListener('mouseup', (e) => {
+            e.preventDefault();
+            const {x, y} = this.getMouseCoordinates(e);
+            this.isMouseInElement(x, y).then((ref) => {
+                ref.onmouseup();
             });
         });
     }
@@ -75,15 +86,15 @@ export default class Base {
         const transformedX = inverseZoom * newX - inverseZoom * transform.e;
         const transformedY = inverseZoom * newY - inverseZoom * transform.f;
 
-        console.log(`Original &nbsp;&nbsp;  x: ${event.offsetX}, y: ${event.offsetY}`)
-        console.log(`Transformed x: ${transformedX}, y: ${transformedY}`)
+        //console.log(`Original &nbsp;&nbsp;  x: ${event.offsetX}, y: ${event.offsetY}`)
+        //console.log(`Transformed x: ${transformedX}, y: ${transformedY}`)
         return {x: transformedX, y: transformedY};
     }
 
     async isMouseInElement(cx, cy) {
         return new Promise(((resolve, reject) => {
             Layers.checkElementIntersect(cx, cy, resolve, reject);
-            reject("Nothing found in this area.");
+            //reject("Nothing found in this area.");
         }))
     }
 }

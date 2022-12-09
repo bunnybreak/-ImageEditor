@@ -3,7 +3,7 @@ import Layers from "./layers.class.js";
 
 export default class CanvasResizer extends Base {
     currentTransformedCursor = {x: 250, y: 250}
-    cameraOffset = {x: this.canvasWidth/2, y: this.canvasWidth/2}
+    cameraOffset = {x: this.canvasWidth / 2, y: this.canvasWidth / 2}
     cameraZoom = 0.5
     MAX_ZOOM = 5
     MIN_ZOOM = 0.1
@@ -12,9 +12,11 @@ export default class CanvasResizer extends Base {
     isDragging = false
     dragStart = {x: 0, y: 0}
 
+    globalId = null;
+
     constructor(props) {
         super(props);
-        console.log('CanvasResizer Loaded');
+        //console.log('CanvasResizer Loaded');
         super.load().then(() => {
             this.recursion();
             this.setEvents();
@@ -22,7 +24,6 @@ export default class CanvasResizer extends Base {
     }
 
     recursion() {
-        let globalId;
         let infinityRender = async () => {
             this.canvas.width = this.canvasWidth = window.screen.width;
             this.canvas.height = this.canvasHeight = window.screen.height;
@@ -32,9 +33,13 @@ export default class CanvasResizer extends Base {
             this.ctx.translate(-this.currentTransformedCursor.x + this.cameraOffset.x, -this.currentTransformedCursor.y + this.cameraOffset.y)
 
             await Layers.render();
-            globalId = requestAnimationFrame(infinityRender);
+            this.globalId = requestAnimationFrame(infinityRender);
         };
         infinityRender();
+    }
+
+    stopRecursion() {
+        cancelAnimationFrame(this.globalId);
     }
 
     getEventLocation(e) {

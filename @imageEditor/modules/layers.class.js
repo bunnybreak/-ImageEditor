@@ -81,14 +81,14 @@ export default class Layers {
 
     static checkElementIntersect(cx, cy, resolve, reject) {
         this.#layers.forEach((layer) => {
-            if(layer instanceof Execute){
+            if (layer instanceof Execute) {
                 return;
             }
             if (layer instanceof ElementBase) {
-                const intersection = layer.isIntersect(cx, cy);
+                const intersection = layer.isIwntersect(cx, cy);
                 if (intersection.isIntersect) {
                     if (!layer.isLock) {
-                        Layers.updateOrCreate(new Execute({
+                        /*Layers.updateOrCreate(new Execute({
                             id: "check-main-intersection",
                             fun: (ctx) => {
                                 ctx.beginPath();
@@ -96,7 +96,7 @@ export default class Layers {
                                 ctx.rect(intersection.x, intersection.y, intersection.width, intersection.height);
                                 ctx.stroke();
                             }
-                        }));
+                        }));*/
                         resolve(layer);
                     } else {
                         reject("Layer is lock.");
@@ -106,6 +106,14 @@ export default class Layers {
                 reject("Not an element of element base.");
             }
         });
+    }
+
+    static delete(id) {
+        let index = this.#layers.findIndex((e) => id === e.id);
+        if (index !== -1) {
+            return this.#layers.splice(index, 1);
+        }
+        return false;
     }
 
     static updateOrCreate(param) {

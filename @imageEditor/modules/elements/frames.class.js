@@ -24,7 +24,7 @@ export default class Frame extends ElementBase {
         label: 'Frame',
     }) {
         super(params);
-        console.log("Frames class Loaded");
+        //console.log("Frames class Loaded");
         if (this.type === 'default') {
             let count = Layers.count(Frame);
             if (this.label === 'Frame') {
@@ -37,7 +37,7 @@ export default class Frame extends ElementBase {
             }
         }
 
-        Layers.updateOrCreate(new Execute({
+        this.updateOrCreate(new Execute({
             id: this.id + "-label",
             fun: (ctx) => {
                 const transform = ctx.getTransform();
@@ -58,5 +58,49 @@ export default class Frame extends ElementBase {
 
         await super.render();
         return this;
+    }
+
+    border(_params = {x: null, y: null, width: null, height: null, thickness: 2, color: "red"}) {
+        _params = this.extend({x: null, y: null, width: null, height: null, thickness: 2, color: "red"}, _params);
+        this.updateOrCreate(new Execute({
+            id: this.id + '-border',
+            fun: (ctx) => {
+                ctx.beginPath();
+                ctx.strokeStyle = _params.color;
+                ctx.lineWidth = _params.thickness;
+                ctx.rect(_params.x, _params.y, _params.width, _params.height);
+                ctx.stroke();
+            }
+        }));
+    }
+
+    removeBorder() {
+        if (this.getById(this.id + '-border'))
+            this.delete(this.id + '-border');
+    }
+
+    async onIntersect(_intersect) {
+        if (_intersect.isIntersect) {
+            await this.border({
+                x: _intersect.x,
+                y: _intersect.y,
+                width: _intersect.width,
+                height: _intersect.height
+            })
+        } else {
+            await this.removeBorder();
+        }
+    }
+
+    onmousemove() {
+
+    }
+
+    onmousedown() {
+
+    }
+
+    onmouseup() {
+
     }
 }

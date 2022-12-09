@@ -1,4 +1,3 @@
-import Stack from "./group.class.js";
 import Group from "./group.class.js";
 
 export default class ElementBase extends Group {
@@ -18,6 +17,7 @@ export default class ElementBase extends Group {
     label;
     name;
     ctx;
+    intersectionPoints = null;
     _default = {
         type: 'default',
         id: this.uniqueId('Element-'),
@@ -33,16 +33,20 @@ export default class ElementBase extends Group {
         label: 'Element',
     };
 
-    constructor(params = {}) {
+    constructor(_params = {}) {
         super();
-        this.config = {...this._default, ...params};
-        console.log("Element Base Loaded", this.config);
+        this.config = this.extend(this._default, _params);
+        //console.log("Element Base Loaded", this.config);
         for (let param in this.config) {
             if (this.config.hasOwnProperty(param))
                 this[param] = this.config[param];
         }
         //get Global CTX
         this.ctx = window.ImageEditor.ctx;
+    }
+
+    extend(_default = {}, _params = {}) {
+        return {..._default, ..._params};
     }
 
     getElementBounds() {
@@ -59,9 +63,9 @@ export default class ElementBase extends Group {
         let element_right = x + w;
         let element_top = y;
         let element_bottom = y + h;
-        let intersect = (cx > element_left && cx < element_right && cy > element_top && cy < element_bottom);
-        return {
-            isIntersect: intersect,
+        let isIntersect = (cx > element_left && cx < element_right && cy > element_top && cy < element_bottom);
+        this.intersectionPoints = {
+            isIntersect: isIntersect,
             left: element_left,
             right: element_right,
             top: element_top,
@@ -70,10 +74,28 @@ export default class ElementBase extends Group {
             height: h,
             x: x,
             y: y
-        };
+        }
+        this.onIntersect(this.intersectionPoints);
+        return this.intersectionPoints;
+    }
+
+    onIntersect(_intersect) {
+
     }
 
     hasChild() {
         return (this.child().count() > 0);
+    }
+
+    onmouseup() {
+        throw new Error("onmousedown event not defined");
+    }
+
+    onmousedown() {
+        throw new Error("onmousedown event not defined");
+    }
+
+    onmousemove() {
+        throw new Error("onmousemove event not defined");
     }
 }
